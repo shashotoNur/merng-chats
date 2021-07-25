@@ -5,42 +5,50 @@ import { updateMsg, deleteMsg } from "../actions/msgActions";
 const Messages = () =>
 {
     const dispatch = useDispatch();
-    const txt = useSelector(state => state.msgTxt)();
-    const [updateTxt, setUpdateTxt] = useState(txt);
+    const chatMessages = useSelector(state => state.chatMessages)();
+
+    const [updateTxt, setUpdateTxt] = useState(chatMessages);
+    const [showForm, setShowForm] = useState(false);
 
     const onUpdateTxtChange = (event) => { setUpdateTxt(event.target.value); };
 
-    const updateMsgTxt = () =>
+    const updateMsgTxt = (id) =>
     {
-        dispatch( updateMsg() );
+        const payload = {id, txt: updateTxt };
+        dispatch( updateMsg(payload) );
 
-        // post updateTxt to server
-        // hide form
+        // subscribe updateTxt to server
+        setShowForm(false);
     }
 
-    const deleteMsgTxt = () =>
+    const deleteMsgTxt = (id) =>
     {
-        dispatch( deleteMsg() );
+        dispatch( deleteMsg(id) );
 
-        // post delete msgId to server
-        // hide form
+        // subscribe delete msgId to server
     }
 
-    const showForm = () =>
-    {
-
-    }
+    const showFormFn = () => setShowForm(true);
 
     return(
-        <div>
-            { txt }
-            <button onClick={ showForm }> Edit </button>
-            <form>
-                <input type='text' className='input' onChange={ onUpdateTxtChange } placeholder={updateTxt} />
-                <button onClick={ updateMsgTxt }> Update </button>
-                <button onClick={ deleteMsgTxt }> Delete </button>
-            </form>
-        </div>
+        <>
+            { chatMessages.map(chatMsg => (
+            <div id={ chatMsg.id }>
+                <p> { chatMsg.msgTxt } </p>
+                <button onClick={ showFormFn }> Edit </button>
+                { showForm
+                    ?
+                        <form>
+                            <input type='text' className='input' onChange={ onUpdateTxtChange }
+                                placeholder={updateTxt} />
+                            <button onClick={ updateMsgTxt(chatMsg.id) }> Update </button>
+                            <button onClick={ deleteMsgTxt(chatMsg.id) }> Delete </button>
+                        </form>
+                    : null 
+                }
+            </div>
+            )) }
+        </>
     )
 }
 

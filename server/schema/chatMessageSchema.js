@@ -55,4 +55,4 @@ const deleteChatMessage = {
 };
 
 
-module.exports = { createChatMessage, updateChatMessage, deleteChatMessage };
+module.exports = { createChatMessage, updateChatMessage, deleteChatMessage, ChatMessageType };

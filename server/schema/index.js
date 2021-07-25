@@ -2,7 +2,7 @@ const { GraphQLObjectType, GraphQLSchema } = require('graphql');
 
 const { getChatThread, createChatMessage, updateChatMessage, deleteChatMessage } = require('./chatSchema');
 
-// Reading data
+// Reading data from database
 const RootQuery = new GraphQLObjectType(
     {
         name: 'RootQueryType',
@@ -12,8 +12,8 @@ const RootQuery = new GraphQLObjectType(
         }
     });
 
-// Anything other than reading
-const RootSubscription = new GraphQLObjectType(
+// Anything that changes database
+const RootMutation = new GraphQLObjectType(
     {
         name: 'Mutation',
         fields:
@@ -24,8 +24,21 @@ const RootSubscription = new GraphQLObjectType(
         }
     });
 
+// Listening to changes in real time
+const RootSubscription = new GraphQLObjectType(
+    {
+        name: 'Subscription',
+        fields:
+        {
+            onCreateChatMessage,
+            onUpdateChatMessage,
+            onDeleteChatMessage
+        }
+    });
+
 
 module.exports = new GraphQLSchema({
     query: RootQuery,
+    mutation: RootMutation,
     subscription: RootSubscription
 });

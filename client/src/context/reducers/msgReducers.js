@@ -1,5 +1,5 @@
 
-const addMsgReducer = (state = [], action) =>
+const msgReducer = (state = [], action) =>
 {
     switch (action.type)
     {
@@ -7,14 +7,28 @@ const addMsgReducer = (state = [], action) =>
             return [...state, action.payload];
 
         case "UPDATE_MSG":
-            return [...state, action.payload];
+            {
+                let updatedMsgState = state.msgs.filter(
+                    msg =>
+                    {
+                        if(msg.id === action.id) msg.txt = action.txt;
+                        return msg;
+                    }
+                );
+                return { msgs: updatedMsgState};
+            }
 
         case "DELETE_MSG":
-            return [...state, action.payload];
+            {
+                let remainingMsgs = state.msgs.filter(
+                    msg => { return msg.id !== action.id }
+                );
+                return { msgs: remainingMsgs};
+            }
 
         default:
             return state;
     }
 }
 
-export default addMsgReducer;
+export default msgReducer;

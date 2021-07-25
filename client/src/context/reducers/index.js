@@ -1,10 +1,10 @@
-import { addMsgReducer, updateMsgReducer, deleteMsgReducer } from "./msgReducers";
 import { combineReducers } from 'redux';
 
+import { msgReducer } from "./msgReducers";
+
 const allReducers = combineReducers({
-    addMsgReducer,
-    updateMsgReducer,
-    deleteMsgReducer
+    msgReducer,
+    // Add other reducers
 });
 
 export default allReducers;

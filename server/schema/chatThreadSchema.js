@@ -1,6 +1,8 @@
 const { GraphQLObjectType, GraphQLString, GraphQLID,
     GraphQLList, GraphQLNonNull } = require('graphql');
 
+const { ChatMessageType } = require('./chatMessageSchema');
+
 const { getChatMessages } = require('../resolvers/chatResolvers');
 const { getChatThread } = require('../resolvers/threadResolvers');
 

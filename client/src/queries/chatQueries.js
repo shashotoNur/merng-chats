@@ -1,7 +1,17 @@
 import { gql } from 'apollo-boost';
 
 const getChatThreadQuery = gql`
-  subscription OnChatMsg($threadId: String!, $sender: String, $msgTxt: String!) {
+  query GetChatMsg($user: String!, $otherUser: String!) {
+    getChatThread (user: $user, otherUser: $otherUser) {
+      id
+      chatMessages
+      status
+    }
+  }
+`;
+
+const createMsgMutation = gql`
+  mutation CreateChatMsg($threadId: String!, $sender: String, $msgTxt: String!) {
     createChatMessage(threadId: $threadId, sender: $sender, msgTxt: $msgTxt) {
       id
       sender
@@ -11,37 +21,33 @@ const getChatThreadQuery = gql`
   }
 `;
 
-const createMsgSubscription = gql`
-  subscription OnChatMsg($threadId: String!, $sender: String, $msgTxt: String!) {
-    createChatMessage(threadId: $threadId, sender: $sender, msgTxt: $msgTxt) {
+const updateMsgMutation = gql`
+  mutation UpdateChatMsg($msgId: String!, $msgTxt: String!) {
+    updateChatMessage(msgId: $msgId, msgTxt: $msgTxt) {
       id
-      sender
       msgTxt
       status
     }
   }
 `;
 
-const updateMsgSubscription = gql`
-  subscription OnChatMsg($threadId: String!, $sender: String, $msgTxt: String!) {
-    createChatMessage(threadId: $threadId, sender: $sender, msgTxt: $msgTxt) {
+const deleteMsgMutation = gql`
+  mutation DeleteChatMsg($msgId: String!) {
+    deleteChatMessage(msgId: $msgId) {
       id
-      sender
-      msgTxt
       status
     }
   }
 `;
 
-const deleteMsgSubscription = gql`
-  subscription OnChatMsg($threadId: String!, $sender: String, $msgTxt: String!) {
-    createChatMessage(threadId: $threadId, sender: $sender, msgTxt: $msgTxt) {
-      id
-      sender
-      msgTxt
-      status
+const threadChangeSubscription = gql`
+  subscription ThreadChangeSubscription($threadId: String!) {
+    threadChangeSubscription(threadId: $threadId) {
+      chatMessage
+      type
     }
   }
 `;
 
-export { getChatThreadQuery, createMsgSubscription, updateMsgSubscription, deleteMsgSubscription };
+export { getChatThreadQuery, createMsgMutation, updateMsgMutation, deleteMsgMutation,
+  threadChangeSubscription };

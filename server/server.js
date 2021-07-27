@@ -5,6 +5,7 @@ import { execute, subscribe } from 'graphql';
 
 const app = require('./config/app');
 const connectToDatabase = require('./config/db');
+const schema = require('../schema/');
 
 const initializeServer = async () =>
     {
@@ -16,11 +17,11 @@ const initializeServer = async () =>
             () =>
                 {
                     new SubscriptionServer(
-                        { execute, subscribe, schema: myGraphQLSchema, },
-                        { server: server, path: '/subscriptions', }
+                        { execute, subscribe, schema },
+                        { server, path: process.env.GRAPHQL_SUBSCRIPTION_ROUTE, }
                     );
 
-                    console.log(`Server running at localhost:${PORT}${process.env.GRAPHQL_ROUTE}`)
+                    console.log(`Server listening on ${ PORT } at ${ process.env.GRAPHQL_ROUTE } & ${ process.env.GRAPHQL_ROUTE }`)
                 }
         );
     };

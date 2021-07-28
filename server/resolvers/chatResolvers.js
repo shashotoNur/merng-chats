@@ -1,4 +1,5 @@
 const ChatMessage = require('../models/chatMessageModel');
+const { pubsub } = require('../config/app.js');
 
 const getChatMessages = async ({ chatMessageIds }) =>
 {
@@ -10,12 +11,12 @@ const getChatMessages = async ({ chatMessageIds }) =>
     catch (err) { return { status: err.message }; };
 };
 
-const createMessage = async ({ threadId, sender, msgTxt}, { pubsub }) =>
+const createMessage = async ({ threadId, sender, msgTxt}) =>
 {
     try
     {
         let message = await ChatMessage.create({ sender, threadId, msgTxt });
-        pubsub.publish('THREAD_CHANGE', { message, type: 'CREATE' });
+        pubsub.publish(threadId, { message, type: 'CREATE' });
 
         message.status = "Message successfully created!";
 
@@ -24,12 +25,12 @@ const createMessage = async ({ threadId, sender, msgTxt}, { pubsub }) =>
     catch (err) { return { status: err.message }; };
 };
 
-const updateMessage = async ({ msgId, msgTxt }, { pubsub }) =>
+const updateMessage = async ({ threadId, msgId, msgTxt }) =>
 {
     try
     {
         let message = await ChatMessage.findByIdAndUpdate(msgId, { msgTxt });
-        pubsub.publish('THREAD_CHANGE', { message, type: 'UPDATE' });
+        pubsub.publish(threadId, { message, type: 'UPDATE' });
 
         message.status = "Message successfully updated!";
 
@@ -38,14 +39,16 @@ const updateMessage = async ({ msgId, msgTxt }, { pubsub }) =>
     catch (err) { return { status: err.message }; };
 };
 
-const deleteMessage = async ({ msgId }, { pubsub }) =>
+const deleteMessage = async ({ threadId, msgId }) =>
 {
     try
     {
-        await ChatMessage.findByIdAndDelete(msgId);
-        pubsub.publish('THREAD_CHANGE', { message: { msgId }, type: 'DELETE' });
+        let message = await ChatMessage.findByIdAndDelete(msgId);
+        pubsub.publish(threadId, { message, type: 'DELETE' });
         
-        return { msgId, status: "Message successfully deleted!" };
+        message.status = "Message successfully deleted!";
+
+        return message;
     }
     catch (err) { return { status: err.message }; };
 };

@@ -1,5 +1,4 @@
-const { GraphQLObjectType, GraphQLString, GraphQLID,
-    GraphQLScalarType, GraphQLList } = require('graphql');
+const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLScalarType } = require('graphql');
 
 const { createMessage, updateMessage, deleteMessage } = require('../resolvers/chatResolvers');
 
@@ -19,12 +18,12 @@ const ChatMessageType = new GraphQLObjectType(
             sender: { type: GraphQLID },
             msgTxt: { type: GraphQLString },
             time: { type: CustomDate },
-            status: { type: new GraphQLList(GraphQLString) }
+            status: { type: GraphQLString }
         })
     });
 
-// Queries and subscriptions
-const createChatMessage = {
+// Mutations
+const createChatMessageMutation = {
     type: ChatMessageType,
     args:
     {
@@ -35,7 +34,7 @@ const createChatMessage = {
     resolve(_parent, args) { return createMessage(args); }
 };
 
-const updateChatMessage = {
+const updateChatMessageMutation = {
     type: ChatMessageType,
     args:
     {
@@ -45,7 +44,7 @@ const updateChatMessage = {
     resolve(_parent, args) { return updateMessage(args); }
 };
 
-const deleteChatMessage = {
+const deleteChatMessageMutation = {
     type: ChatMessageType,
     args:
     {
@@ -55,4 +54,5 @@ const deleteChatMessage = {
 };
 
 
-module.exports = { createChatMessage, updateChatMessage, deleteChatMessage, ChatMessageType };
+module.exports = { createChatMessageMutation, updateChatMessageMutation,
+                                    deleteChatMessageMutation, ChatMessageType };

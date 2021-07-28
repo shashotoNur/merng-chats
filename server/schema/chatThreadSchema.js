@@ -6,6 +6,8 @@ const { ChatMessageType } = require('./chatMessageSchema');
 const { getChatMessages } = require('../resolvers/chatResolvers');
 const { getChatThread } = require('../resolvers/threadResolvers');
 
+const { pubsub } = require('../config/app');
+
 // Return types
 const ChatThreadType = new GraphQLObjectType(
     {
@@ -30,17 +32,16 @@ const ThreadChangeType = new GraphQLObjectType(
     });
 
 // Queries and subscription
-const getChatThread = {
+const getChatThreadQuery = {
     type: ChatThreadType,
     args: { threadId: { type: new GraphQLNonNull(GraphQLID) } },
-    resolve(_parent, args, context) { return getChatThread(args, context); }
+    resolve(_parent, args) { return getChatThread(args, context); }
 };
 
 const threadChangeSubscription = {
     type: ThreadChangeType,
     args: { threadId: { type: new GraphQLNonNull(GraphQLID) } },
-    resolve: (payload) => { return payload; },
-    subscribe: () => pubsub.asyncIterator('THREAD_CHANGE')
+    subscribe: (_parent, args) => pubsub.asyncIterator(args.threadId)
 };
 
-module.exports = { getChatThread, threadChangeSubscription };
+module.exports = { getChatThreadQuery, threadChangeSubscription };

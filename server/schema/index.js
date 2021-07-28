@@ -1,13 +1,14 @@
 const { GraphQLObjectType, GraphQLSchema } = require('graphql');
 
-const { createChatMessage, updateChatMessage, deleteChatMessage } = require('./chatMessageSchema');
-const { getChatThread, threadChangeSubscription } = require('./chatThreadSchema');
+const { createChatMessageMutation, updateChatMessageMutation,
+                deleteChatMessageMutation } = require('./chatMessageSchema');
+const { getChatThreadQuery, threadChangeSubscription } = require('./chatThreadSchema');
 
 // Reading data from database
 const RootQuery = new GraphQLObjectType(
     {
         name: 'RootQueryType',
-        fields: { getChatThread }
+        fields: { getChatThreadQuery }
     });
 
 // Anything that changes database
@@ -16,9 +17,9 @@ const RootMutation = new GraphQLObjectType(
         name: 'Mutation',
         fields:
             {
-                createChatMessage,
-                updateChatMessage,
-                deleteChatMessage
+                createChatMessageMutation,
+                updateChatMessageMutation,
+                deleteChatMessageMutation
             }
     });
 
